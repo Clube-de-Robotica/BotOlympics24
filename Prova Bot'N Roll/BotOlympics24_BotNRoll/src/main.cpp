@@ -61,7 +61,7 @@ BnrOneA one;
 
 // place your functions here
 
-/* USER CODE END FUNCTION PROTOTYPES */
+void rotate(int graus, int direction);
 
 //  The setup function runs once when you press reset or power the board
 void setup()
@@ -71,18 +71,15 @@ void setup()
     one.spiConnect(SSPIN);     // start SPI communication module
     one.stop();                // stop motors
     one.obstacleEmitters(OFF); // desactivate IR emitters
-    one.minBat(10.5);          // set batery treshold
+    one.minBat(3);          // set batery treshold
     Lidar.begin();
     /* USER CODE BEGIN Initializations */
-
+    one.magnet(1);
     // place your initializations here
 
-       pinMode(3,OUTPUT);
-       digitalWrite(3,1);
     /* USER CODE END Initializations */
 
     Lidar.scanI2C();
-
     while (one.readButton() != 1)
     {
         // stuff to do while waiting for button PB1 to be pressed
@@ -98,11 +95,6 @@ void setup()
             "\nFront: " + String(front) + "mm" + 
             "\nRight: " + String(right) + "mm"
         );
-        
-        
-
-
-
 
         Serial.println("LINE SENSOR VALUES: ");
         int sensor0 = one.readAdc(0);
@@ -134,14 +126,153 @@ void setup()
         Serial.println();
         delay(2000); // wait 2sec
 
-    }
+    } 
 }
+
+int checkWallFront(){
+  if(Lidar.getLidarFrontDistance() >120){
+    return 0;
+  }
+  return 1 ;
+}
+
+int checkWallLeft(){
+  if(Lidar.getLidarLeftDistance() >150){
+    return 0;
+  }
+  return 1;
+}
+
+int checkWallRight(){
+  if(Lidar.getLidarRightDistance()>300)
+    return 0;
+  return 1;
+}
+
+void followWallRight(){
+  while(checkWallRight()){
+    if(Lidar.getLidarRightDistance()<=100){
+      one.move(15,20);
+    }
+    if(checkWallFront()){
+      rotate(90,0);
+      one.move(15,20);
+    }
+    else if(Lidar.getLidarRightDistance()>=150 && Lidar.getLidarRightDistance()<=300){
+      one.move(25,15);
+    }
+    else{
+    one.move(20,20);
+    }
+  }
+  delay(500);
+  rotate(90,1);
+}
+
+
+void rotate(int graus, int direction){ // 0 left, 1 right
+
+  if(direction){
+    one.move(20,-20);
+    delay(4.10*graus);
+  }
+  else{
+    one.move(-20,20);
+    delay(4.10*graus);
+  }
+}
+
+int checkWhite(int indice){
+  int limiar = 100;
+  if(one.readAdc(indice) <limiar)
+  return 1;
+  else
+  return 0;
+}
+
+int allWhite(){
+  int limiar = 100;
+  int counter = 0;
+  for(int i = 0;i<8;i++){
+    if(checkWhite(i))
+      counter++;
+  }
+  if(counter >=4){
+    return 1;
+  }
+  else
+  return 0;
+}
+
+void checkLine(){
+    int SPEED= 30 ;
+    int limiar = 115;
+
+    if(allWhite()){
+      one.brake(100,100);
+      delay(300);
+      return ;
+    }
+    else if(one.readAdc(3) <limiar && one.readAdc(4) < limiar){
+        one.move(SPEED*2, SPEED*2);
+    }
+    else if(one.readAdc(0) < limiar  && one.readAdc(1) < limiar){
+      one.move(SPEED * 0.0001, SPEED * 3.5);
+    }
+    else if(one.readAdc(7) < limiar && one.readAdc(6)<limiar){
+      one.move(SPEED * 3.5 ,SPEED * 0.0001);
+    }
+    else if(one.readAdc(2)<limiar){
+      one.move(SPEED*0.5,SPEED*3);
+    }
+    else if(one.readAdc(5)<limiar){
+      one.move(SPEED*3,SPEED*0.5);
+    }
+  return;
+}
+
+
+
+
+
 
 //  The loop function runs over and over again forever
 void loop()
-{ 
+{
+  
+  /*
+  one.move(22,20);
 
   
+  if(checkWallRight()){
+    followWallRight();
+  }  
 
+  if(checkWallLeft()){
+    rotate(180,1);
+
+  }
+
+  if(checkWallFront()){
+    rotate(90,0);
+  } */
+      
+  int endLine=0;
+
+
+  if(allWhite()==0){
+    checkLine();
+  }
+  else{
+    one.stop();
+  }
+
+                                                                                                                                            
+  
 
 }
+
+
+
+
+
