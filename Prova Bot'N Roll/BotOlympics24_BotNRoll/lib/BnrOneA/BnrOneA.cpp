@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 void BnrOneA::spiConnect(byte sspin)
-{
+{   pinMode(3,OUTPUT);
     _sspin=sspin;
     pinMode(_sspin,OUTPUT); //sspin as output
     SPI.begin();    //Initializes the SPI bus by setting SCK and MOSI to outputs, pulling SCK and MOSI low.
@@ -1326,6 +1326,7 @@ void BnrOneA::sendCalibrate(int valMax[],int valMin[],int vtrans)
 
 //teste iman bot
 void BnrOneA::magnet(boolean state)
+
 {
     if(state>1)
     {
