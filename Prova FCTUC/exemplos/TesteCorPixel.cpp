@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "BotFCTUC.h"
+#include "FCTUC.h"
 
 BotFCTUC jeff;
 
@@ -13,15 +13,7 @@ void setup() {
 }
 
 void loop() {
-    color = jeff.getColorValue();
     
-    Serial.println(
-        "R: " + String(color.r) + 
-        ", G: " + String(color.g) + 
-        ", B: " + String(color.b) + 
-        ", C: " + String(color.c)
-    );
-
     jeff.setPixelColor(color.r, color.g, color.b);
     jeff.setPixelBrightness(127);
     

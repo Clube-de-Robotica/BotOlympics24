@@ -13,18 +13,6 @@ void setup() {
 
 void loop() {
     //----------------------------------------------------------
-    Serial.println("VENTOINHA");
-    jeff.fanOn();
-    delay(250);
-    jeff.fanOff();
-    //----------------------------------------------------------
-    Serial.println("CHAMA");
-
-    for (int i = 0; i < 64; i++) {
-        jeff.printFlameValue();
-        delay(100);
-    }
-    //----------------------------------------------------------
     Serial.println("LIDARES");
 
     jeff.printI2C();
