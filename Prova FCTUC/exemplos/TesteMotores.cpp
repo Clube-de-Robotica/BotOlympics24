@@ -15,8 +15,6 @@ void setup() {
 
 void loop() {
 
-    
-
     bot.moveMotorLeft(127); // Mover só o motor esquerdo
     delay(1000);
     bot.moveMotorLeft(0);
