@@ -5,7 +5,7 @@ BotFCTUC jeff;
 
 void setup() {
     Serial.begin(9600);
-    jeff.begin(false, false);
+    jeff.begin();
 
     Serial.println("Teste motores");
 
