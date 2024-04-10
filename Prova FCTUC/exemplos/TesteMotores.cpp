@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "FCTUC.h"
 
-BotFCTUC bot;
+FCTUC bot;
 
 void setup() {
     Serial.begin(9600);
